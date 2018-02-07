@@ -78,6 +78,40 @@ public class LitecartNinthTask {
             }
        }
 
+       @Test
+       public void geozones(){
+           driver.get("http://localhost/litecart/admin");
+           driver.findElement(By.name("username")).sendKeys("admin");
+           driver.findElement(By.name("password")).sendKeys("admin");
+           driver.findElement(By.name("login")).click();
+
+           driver.findElement(By.cssSelector("#box-apps-menu-wrapper li:nth-child(6)")).click();
+
+           List<WebElement> zone = driver.findElements(By.cssSelector(".dataTable .row td:nth-child(3)"));
+           ArrayList<String> countries = new ArrayList<String>();
+
+           for (WebElement el : zone){
+               countries.add(el.getAttribute("innerText"));
+           }
+
+           for (String cds : countries) {
+               driver.findElement(By.linkText(cds)).click();
+               zone = driver.findElements(By.cssSelector(".dataTable tr td:nth-child(3) select option:checked"));
+               List<String> geozones = new ArrayList<>();
+               for (WebElement el : zone) {
+                   geozones.add(el.getAttribute("innerText"));
+               }
+
+               List<String> geozones_sort = new ArrayList<>(geozones);
+               Collections.sort(geozones_sort);
+               Assert.assertEquals(geozones_sort,geozones);
+
+               driver.get("http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones");
+           }
+
+
+       }
+
 
     @After
     public void stop(){
